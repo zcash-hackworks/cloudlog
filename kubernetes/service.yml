@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cloudlog
+  labels:
+    app: cloudlog
+spec:
+  type: ClusterIP
+  selector:
+    app: cloudlog
+  ports:
+  - name: cloudlog
+    protocol: TCP
+    port: 3000

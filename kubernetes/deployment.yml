@@ -1,0 +1,25 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cloudlog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudlog
+  template:
+    metadata:
+      labels:
+        app: cloudlog
+    spec:
+      containers:
+      - image: benzcash/cloudlog
+        imagePullPolicy: Always
+        name: cloudlog
+        env:
+          - name: slackURL
+            valueFrom:
+              secretKeyRef:
+                name: cloudlog-secret
+                key: slackURL
