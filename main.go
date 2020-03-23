@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber"
+	flog "github.com/gofiber/logger"
 	"github.com/slack-go/slack"
 	"go.uber.org/zap"
 )
@@ -29,6 +30,7 @@ func main() {
 	defer logger.Sync()
 	log := logger.Sugar()
 	app := fiber.New()
+	app.Use(flog.New())
 
 	slackURL = os.Getenv("slackURL")
 	if slackURL == "" {
