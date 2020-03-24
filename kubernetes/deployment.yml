@@ -23,3 +23,8 @@ spec:
               secretKeyRef:
                 name: cloudlog-secret
                 key: slackURL
+          - name: tektonDashboadUrl
+            valueFrom:
+              secretKeyRef:
+                name: cloudlog-secret
+                key: tektonDashboadUrl

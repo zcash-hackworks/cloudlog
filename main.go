@@ -13,6 +13,7 @@ import (
 )
 
 var slackURL string
+var tektonDashboadUrl string
 
 type slackMessage struct {
 	Blocks []slack.MessageBlockType
@@ -29,12 +30,18 @@ func main() {
 	logger, _ := zap.NewProduction()
 	defer logger.Sync()
 	log := logger.Sugar()
+	log.Infow("Startup", "version", Version)
 	app := fiber.New()
 	app.Use(flog.New())
 
 	slackURL = os.Getenv("slackURL")
 	if slackURL == "" {
 		log.Fatalw("slackURL ENV value missing")
+	}
+
+	tektonDashboadUrl = os.Getenv("tektonDashboadUrl")
+	if tektonDashboadUrl == "" {
+		log.Fatalw("tektonDashboadUrl ENV value missing")
 	}
 
 	app.Get("/", func(c *fiber.Ctx) {
@@ -57,7 +64,7 @@ func main() {
 			return
 		}
 
-		if err := sendSlackMessage(cloudEvent); err != nil {
+		if err := sendSlackMessage(cloudEvent, log); err != nil {
 			log.Error(err)
 			c.Status(500).Send(err)
 			return
@@ -115,8 +122,9 @@ type TektonCloudEvent struct {
 	PodName string `json:"pod_name"`
 }
 
-func sendSlackMessage(cloudEvent *TektonCloudEvent) error {
-	text := fmt.Sprintf("*%s*\n\n```%s```\nPodName: %s", cloudEvent.Title, cloudEvent.Message, cloudEvent.PodName)
+func sendSlackMessage(cloudEvent *TektonCloudEvent, log *zap.SugaredLogger) error {
+	text := fmt.Sprintf("*%s*\n\n```%s```\nPodName: %s/%s", cloudEvent.Title, cloudEvent.Message, tektonDashboadUrl, cloudEvent.PodName)
+	log.Infow("Sending slack message!", "text", text)
 	msg := slack.WebhookMessage{
 		Text: text,
 	}

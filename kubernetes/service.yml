@@ -6,7 +6,7 @@ metadata:
   labels:
     app: cloudlog
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: cloudlog
   ports:
