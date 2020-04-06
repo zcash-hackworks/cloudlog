@@ -1,11 +1,10 @@
 SHELL := /bin/bash
 
-VERSION := $(CI_COMMIT_TAG)
-GITCOMMIT := $(git rev-list -1 HEAD)
-BRANCH := $(CI_COMMIT_BRANCH)
+VERSION := `git describe --always`
+GITCOMMIT := `git rev-parse HEAD`
+BRANCH := `git rev-parse --abbrev-ref HEAD`
 BUILDDATE := `date +%Y-%m-%d`
 BUILDUSER := `whoami`
-PROJECT_ROOT := github.com/benzcash/cloudlog
 
 LDFLAGSSTRING :=-X main.Version=$(VERSION)
 LDFLAGSSTRING +=-X main.GitCommit=$(GITCOMMIT)
