@@ -1,6 +1,11 @@
-FROM golang:1.13
+FROM golang:1.13 as builder
 
-ADD . /workspace/cloudlog
-WORKDIR /workspace/cloudlog
+ADD . /app/
+WORKDIR /app/
 RUN make build
-ENTRYPOINT ["/workspace/cloudlog/cloudlog"]
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/cloudlog /usr/local/bin/
+ENTRYPOINT ["cloudlog"]
