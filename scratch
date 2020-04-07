@@ -1,0 +1,5 @@
+failed to evaluate expression 
+'body.repository.full_name == 'zcash-hackworks/cloudlog' 
+&& body.pull_request.user.login == 'benzcash' 
+&& ( body.action == 'opened' || body.action == 'synchronize')'
+
