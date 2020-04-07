@@ -1,5 +1,5 @@
 # cloudlog
-
+CO AUTHOR SANITY CHECK
 A small application to forward received messages.
 
 Right now, it will take in a [CloudEvent](https://github.com/cloudevents/spec) message from a [Tekton](https://github.com/tektoncd/pipeline) task and send Slack notifications.
