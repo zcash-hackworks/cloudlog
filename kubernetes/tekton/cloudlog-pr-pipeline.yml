@@ -1,0 +1,60 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cloudlog-pr-pipeline
+spec:
+  resources:
+    - name: source
+      type: git
+  params:
+    - name: shortSha
+    - name: gitHubProject
+    - name: gitCommit
+  tasks:
+    - name: set-status-pending
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.gitHubProject)
+        - name: SHA
+          value: $(params.gitCommit)
+        - name: TARGET_URL
+          value: http://google.com
+        - name: DESCRIPTION
+          value: Attempting to build a binary
+        - name: CONTEXT
+          value: cloudlog-build-binary/check
+        - name: STATE
+          value: pending
+    - name: cloudlog-build-binary
+      runAfter:
+        - set-status-pending
+      taskRef:
+        name: cloudlog-build
+      params:
+        - name: shortSha
+          value: $(params.shortSha)
+      resources:
+        inputs:
+          - name: source
+            resource: source
+    - name: set-status-success
+      runAfter:
+        - cloudlog-build-binary
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.gitHubProject)  
+        - name: SHA
+          value: $(params.gitCommit)  
+        - name: TARGET_URL
+          value: http://google.com
+        - name: DESCRIPTION
+          value: Sucessfully built a binary
+        - name: CONTEXT
+          value: cloudlog-build-binary/check
+        - name: STATE
+          value: success

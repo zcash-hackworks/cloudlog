@@ -1,0 +1,39 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: cloudlog-build
+spec:
+  volumes:
+    - name: k8s-prod-tekton-account
+      secret:
+        secretName: k8s-prod-tekton-account
+  params:
+    - name: shortSha
+  resources:
+    inputs:
+      - name: source
+        type: git
+  steps:
+    - name: build-binary
+      image: golang
+      script: |
+        env | sort
+        pwd
+        ls -l
+        cd /workspace/source
+        ls -l
+        make build
+    - name: upload-binary
+      image: google/cloud-sdk
+      env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/k8s-prod-tekton-account/k8s-prod-tekton-account-key.json
+      volumeMounts:
+        - name: k8s-prod-tekton-account
+          mountPath: /var/secrets/k8s-prod-tekton-account
+      script: |
+        #!/usr/bin/env bash
+        pwd
+        gcloud auth activate-service-account --key-file=/var/secrets/k8s-prod-tekton-account/k8s-prod-tekton-account-key.json
+        gsutil cp /workspace/source/cloudlog gs://k8s-prod-tekton-20200319/cloudlog-$(inputs.params.shortSha)

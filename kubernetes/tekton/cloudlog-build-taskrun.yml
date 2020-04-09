@@ -1,0 +1,22 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  generateName: cloudlog-build-
+spec:
+  serviceAccountName: ecc-tekton
+  taskRef:
+    name: cloudlog-build
+  inputs:
+    resources:
+      - name: source
+        resourceSpec:
+          type: git
+          params:
+            - name: revision
+              value: master
+            - name: url
+              value: https://github.com/zcash-hackworks/cloudlog.git
+    params:
+      - name: shortSha
+        value: HEAD
