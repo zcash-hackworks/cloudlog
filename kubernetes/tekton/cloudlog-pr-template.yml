@@ -30,7 +30,7 @@ spec:
                   - name: revision
                     value: $(params.gitCommit)
                   - name: url
-                    value: $(params.gitRepositoryURL)
+                    value: $(params.gitRepositoryURL)            
         params:
           - name: shortSha
             value: $(params.short_sha)

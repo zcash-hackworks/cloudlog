@@ -7,10 +7,15 @@ spec:
   resources:
     - name: source
       type: git
+    - name: cloudlog
+      type: cloudEvent
+    - name: cloudlog-image
+      type: image
   params:
     - name: shortSha
     - name: gitHubProject
     - name: gitCommit
+    - name: statusURL
   tasks:
     - name: set-status-pending
       taskRef:
@@ -21,7 +26,7 @@ spec:
         - name: SHA
           value: $(params.gitCommit)
         - name: TARGET_URL
-          value: http://google.com
+          value: $(params.statusURL)
         - name: DESCRIPTION
           value: Attempting to build a binary
         - name: CONTEXT
@@ -51,7 +56,7 @@ spec:
         - name: SHA
           value: $(params.gitCommit)  
         - name: TARGET_URL
-          value: http://google.com
+          value: $(params.statusURL)
         - name: DESCRIPTION
           value: Sucessfully built a binary
         - name: CONTEXT
@@ -67,7 +72,7 @@ spec:
         - name: SHA
           value: $(params.gitCommit)
         - name: TARGET_URL
-          value: http://google.com
+          value: $(params.statusURL)
         - name: DESCRIPTION
           value: Attempting to build a docker image
         - name: CONTEXT
@@ -83,6 +88,11 @@ spec:
         inputs:
           - name: docker-source
             resource: source
+        outputs:
+          - name: builtImage
+            resource: cloudlog-image
+          - name: notification
+            resource: cloudlog
     - name: set-docker-status-success
       runAfter:
         - cloudlog-build-docker-image
@@ -94,10 +104,10 @@ spec:
         - name: SHA
           value: $(params.gitCommit)  
         - name: TARGET_URL
-          value: http://google.com
+          value: $(params.statusURL)
         - name: DESCRIPTION
-          value: Sucessfully built a binary
+          value: Sucessfully built a docker image
         - name: CONTEXT
-          value: cloudlog-build-binary/check
+          value: cloudlog-build-docker-image/check
         - name: STATE
           value: success          
