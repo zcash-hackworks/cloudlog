@@ -81,7 +81,7 @@ spec:
         name: build-docker-image-from-git-source
       resources:
         inputs:
-          - name: source
+          - name: docker-source
             resource: source
     - name: set-docker-status-success
       runAfter:
