@@ -1,0 +1,22 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cloudlog-build-pipeline
+spec:
+  resources:
+    - name: source
+      type: git
+  params:
+    - name: shortSha
+  tasks:
+    - name: cloudlog-build-binary
+      taskRef:
+        name: cloudlog-build
+      params:
+        - name: shortSha
+          value: $(params.shortSha)
+      resources:          
+        inputs:
+          - name: source
+            resource: source
