@@ -14,6 +14,8 @@ spec:
       default: master
     - name: short_sha
       description: Short sha from git commit used to identify binaries
+    - name: statusURL
+      description: Tekton dashboard URL for the resource status
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -32,6 +34,15 @@ spec:
                   value: $(params.gitCommit)
                 - name: url
                   value: $(params.gitRepositoryURL)
+          - name: cloudlog-image
+            resourceSpec:
+              type: image
+              params:
+                - name: url
+                  value: electriccoinco/cloudlog
+          - name: cloudlog
+            resourceRef:
+              name: cloudlog
         params:
           - name: shortSha
             value: $(params.short_sha)
@@ -40,4 +51,6 @@ spec:
           - name: gitCommit
             value: $(params.gitCommit)
           - name: gitHubProject
-            value: $(params.gitHubProject)              
+            value: $(params.gitHubProject)
+          - name: statusURL
+            value: $(params.statusURL)
