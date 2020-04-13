@@ -58,3 +58,46 @@ spec:
           value: cloudlog-build-binary/check
         - name: STATE
           value: success
+    - name: set-docker-status-pending
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.gitHubProject)
+        - name: SHA
+          value: $(params.gitCommit)
+        - name: TARGET_URL
+          value: http://google.com
+        - name: DESCRIPTION
+          value: Attempting to build a docker image
+        - name: CONTEXT
+          value: cloudlog-build-docker-image/check
+        - name: STATE
+          value: pending
+    - name: cloudlog-build-docker-image
+      runAfter:
+        - set-docker-status-pending
+      taskRef:
+        name: build-docker-image-from-git-source
+      resources:
+        inputs:
+          - name: source
+            resource: source
+    - name: set-docker-status-success
+      runAfter:
+        - cloudlog-build-docker-image
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: $(params.gitHubProject)  
+        - name: SHA
+          value: $(params.gitCommit)  
+        - name: TARGET_URL
+          value: http://google.com
+        - name: DESCRIPTION
+          value: Sucessfully built a binary
+        - name: CONTEXT
+          value: cloudlog-build-binary/check
+        - name: STATE
+          value: success          
