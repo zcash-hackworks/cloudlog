@@ -1,0 +1,17 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: cloudlog-pr-binding
+spec:
+  params:
+  - name: dockerImageName
+    value: electriccoinco/cloudlog
+  - name: gitCommit
+    value: $(body.pull_request.head.sha)
+  - name: short_sha
+    value: $(body.short_sha)
+  - name: gitRepositoryURL
+    value: $(body.repository.clone_url)
+  - name: gitHubProject
+    value: $(body.repository.full_name)

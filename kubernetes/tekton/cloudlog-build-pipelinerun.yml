@@ -1,0 +1,20 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: cloudlog-build-pipeline-
+spec:
+  pipelineRef:
+    name: cloudlog-build-pipeline
+  params:
+    - name: shortSha
+      value: master
+  resources:
+    - name: source
+      resourceSpec:
+        type: git
+        params:
+          - name: revision
+            value: master
+          - name: url
+            value: https://github.com/zcash-hackworks/cloudlog.git
