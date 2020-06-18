@@ -41,8 +41,11 @@ spec:
                 - name: url
                   value: electriccoinco/cloudlog
           - name: cloudlog
-            resourceRef:
-              name: cloudlog
+            resourceSpec:
+              type: cloudEvent
+              params:
+              - name: targetURI
+                value: http://cloudlog:8080/inbox
         params:
           - name: shortSha
             value: $(params.short_sha)
