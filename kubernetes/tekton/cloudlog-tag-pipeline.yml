@@ -1,0 +1,38 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cloudlog-tag-pipeline
+spec:
+  resources:
+    - name: source
+      type: git
+    - name: cloudlog
+      type: cloudEvent
+    - name: cloudlog-image
+      type: image
+  params:
+    - name: tagName
+  tasks:
+    - name: cloudlog-build-binary
+      taskRef:
+        name: cloudlog-build
+      params:
+        - name: shortSha
+          value: $(params.tagName)        
+      resources: 
+        inputs:
+          - name: source
+            resource: source
+    - name: cloudlog-build-docker-image
+      taskRef:
+        name: build-docker-image-from-git-source
+      resources:
+        inputs:
+          - name: docker-source
+            resource: source
+        outputs:
+          - name: builtImage
+            resource: cloudlog-image
+          - name: notification
+            resource: cloudlog
