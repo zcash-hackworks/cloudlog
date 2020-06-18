@@ -1,0 +1,21 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  generateName: cloudlog-dockerhub-readme-update-run-
+spec:
+  taskRef:
+    name: dockerhub-readme-update
+  inputs:
+    params:
+      - name: dockerHubRepo
+        value: electriccoinco/cloudlog
+    resources:
+      - name: source
+        resourceSpec:
+          type: git
+          params:
+            - name: url
+              value: https://github.com/zcash-hackworks/cloudlog.git
+            - name: revision
+              value: master

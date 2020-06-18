@@ -1,0 +1,13 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: cloudlog-tag-binding
+spec:
+  params:
+  - name: dockerImageName
+    value: electriccoinco/cloudlog
+  - name: tagName
+    value: $(body.ref)
+  - name: gitRepositoryURL
+    value: $(body.repository.clone_url)
